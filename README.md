@@ -4,6 +4,14 @@ picture roll polling never stop.
 
 
 <br />
+
+
+### 效果示例图
+![project root build.gradle](/img/rollpolling1.gif)  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+![project root build.gradle](/img/rollpolling2.gif)
+
+
+<br />
 <br />
 
 
