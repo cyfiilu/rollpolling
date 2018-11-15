@@ -9,7 +9,7 @@ picture roll polling never stop.
 
 ### android studio接入方式
 #### 1. add the JitPack repository in your root build.gradle as follows：
-![project root build.gradle](C:/Users/Administrator/Desktop/root.png)
+![project root build.gradle](/img/root.png)
 
 
 <br />
@@ -25,14 +25,14 @@ compile 'com.github.cyfiilu:rollpolling:v1.0.2'
 
 ### use help
 #### 1. use fragment label in xml.
-![use fragment label in xml](C:/Users/Administrator/Desktop/xml.png)
+![use fragment label in xml](/img/xml.png)
 
 <br />
 <br />
 
 
 #### 2. as follows in code 
-![as follows in code ](C:/Users/Administrator/Desktop/code.png)
+![as follows in code ](/img/code.png)
 代码中可以设置一些参数：  <br />
 图片高度（默认150dp）、 <br />
 图片左右边距（默认10dp）、 <br />
@@ -50,7 +50,7 @@ compile 'com.github.cyfiilu:rollpolling:v1.0.2'
 
 
 #### 3. pass param as follows
-![pass param as follows](C:/Users/Administrator/Desktop/data.png)
+![pass param as follows](/img/data.png)
 传入的图片链接，只支持从网络down图片。
 
 <br />
@@ -58,5 +58,5 @@ compile 'com.github.cyfiilu:rollpolling:v1.0.2'
 
 
 #### 4. click picture callback 
-![click picture callback](C:/Users/Administrator/Desktop/callback.png)
+![click picture callback](/img/callback.png) 
 点击图片的监听回调，注意：position从1开始，而不是0
