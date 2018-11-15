@@ -42,7 +42,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
     private static final int MAX_CAROUSEL_PICTRUE = 6;
 
     /** 轮播时长 */
-    private long mCarouselPeriod = 3000L;
+    private long mRollPollingPeriod = 3000L;
     private float mCornerRadius = 5f;
     private int mIndicatorGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
     private int mIndicatorPadding = 5;
@@ -125,7 +125,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
      * @param imgAddressArr 轮播图片路径  length至少为1
      * @param indicatorResId 指示器资源id  -1：不创建指示器
      */
-    public void startCarousel(String[] imgAddressArr, int indicatorResId) {
+    public void startRollPolling(String[] imgAddressArr, int indicatorResId) {
         if (imgAddressArr == null || imgAddressArr.length < 1) return;
 
         String[] tempArr;
@@ -241,7 +241,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
                     mHandler.sendEmptyMessage(MSG_EMPTY);
                 }
             };
-            mTimer.schedule(mTimerTask, mCarouselPeriod, mCarouselPeriod);
+            mTimer.schedule(mTimerTask, mRollPollingPeriod, mRollPollingPeriod);
         }
     }
 
@@ -423,11 +423,11 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     /**
      * 轮播间隔
-     * @param carouselPeriod 单位：ms
+     * @param rollPollingPeriod 单位：ms
      * @return
      */
-    public RollPollingFragment setCarouselPeriod(long carouselPeriod) {
-        this.mCarouselPeriod = carouselPeriod;
+    public RollPollingFragment setRollPollingPeriod(long rollPollingPeriod) {
+        this.mRollPollingPeriod = rollPollingPeriod;
         return this;
     }
 }

@@ -3,7 +3,6 @@ package com.iilu.rollpolling;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -21,9 +20,15 @@ public class MainActivity extends AppCompatActivity implements RollPollingFragme
     private void initView() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         RollPollingFragment rollPollingFragment = (RollPollingFragment) fragmentManager.findFragmentById(R.id.fragment_roll_polling);
-        rollPollingFragment.setIndicatorGravity(Gravity.RIGHT | Gravity.BOTTOM)
-                .startCarousel(initImgAddressarr(), R.drawable.selector_indicator);
-        rollPollingFragment.setOnRollPollingClickListener(this);
+        rollPollingFragment.setImgHeight(160) // set img height, default 150dp
+                .setImgMargin(8) // set img left and right margin, default 10dp
+                .setCornerRadius(3) // set img round corner radius, default 5dp
+                .setIndicatorPadding(4) // set indicator padding, default 5dp
+                .setIndicatorGravity(Gravity.RIGHT | Gravity.BOTTOM) // set indicator position, default Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+                .setRollPollingPeriod(3800) // set roll polling period, unit is ms, default 3000
+                .setStartPosition(2) // set start roll polling position, default 1
+                .startRollPolling(initImgAddressarr(), R.drawable.selector_indicator);
+        rollPollingFragment.setOnRollPollingClickListener(this); // set click picture callback
     }
 
     private String[] initImgAddressarr() {
@@ -40,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements RollPollingFragme
 
     @Override
     public void onRollPollingClick(int position) {
+        // position begin 1，not 0
         Toast.makeText(this, position + "", Toast.LENGTH_SHORT).show();
     }
 
