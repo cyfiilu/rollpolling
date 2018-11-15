@@ -3,6 +3,7 @@ package com.iilu.rollpolling;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
 
@@ -22,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements RollPollingFragme
         RollPollingFragment rollPollingFragment = (RollPollingFragment) fragmentManager.findFragmentById(R.id.fragment_roll_polling);
         rollPollingFragment.setIndicatorGravity(Gravity.RIGHT | Gravity.BOTTOM)
                 .startCarousel(initImgAddressarr(), R.drawable.selector_indicator);
-        rollPollingFragment.setOnClickListener(this);
+        rollPollingFragment.setOnRollPollingClickListener(this);
     }
 
     private String[] initImgAddressarr() {
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements RollPollingFragme
 
     @Override
     public void onRollPollingClick(int position) {
-        Toast.makeText(this, position + "", Toast.LENGTH_SHORT);
+        Toast.makeText(this, position + "", Toast.LENGTH_SHORT).show();
     }
 
     @Override

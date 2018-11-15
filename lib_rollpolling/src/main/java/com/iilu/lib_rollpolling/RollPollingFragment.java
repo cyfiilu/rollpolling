@@ -70,7 +70,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
      * 设置点击图片回调
      * @param listener
      */
-    public void setOnClickListener(OnRollPollingClickListener listener) {
+    public void setOnRollPollingClickListener(OnRollPollingClickListener listener) {
         this.mOnRollPollingClickListener = listener;
     }
 
