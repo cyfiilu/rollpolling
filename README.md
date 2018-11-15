@@ -59,4 +59,5 @@ compile 'com.github.cyfiilu:rollpolling:v1.0.2'
 
 #### 4. click picture callback 
 ![click picture callback](/img/callback.png) 
+<br />
 点击图片的监听回调，注意：position从1开始，而不是0
