@@ -51,6 +51,7 @@ compile 'com.github.cyfiilu:rollpolling:v1.0.2'
 
 #### 3. pass param as follows
 ![pass param as follows](/img/data.png)
+<br />
 传入的图片链接，只支持从网络down图片。
 
 <br />
