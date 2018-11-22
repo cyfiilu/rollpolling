@@ -1,6 +1,7 @@
 # rollpolling
 
-picture roll polling never stop.
+picture roll polling never stop.  
+最大支持9个图片链接（即9张图片），如果多于9个链接、则只取前9个。
 
 
 <br />
