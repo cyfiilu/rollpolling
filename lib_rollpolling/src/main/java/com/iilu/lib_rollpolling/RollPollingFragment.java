@@ -39,7 +39,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     private static final int MSG_EMPTY = 0x0001;
     /**最多轮播图片*/
-    private static final int MAX_CAROUSEL_PICTRUE = 6;
+    private static final int MAX_CAROUSEL_PICTURE = 9;
 
     /** 轮播时长 */
     private long mRollPollingPeriod = 3000L;
@@ -129,9 +129,9 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
         if (imgAddressArr == null || imgAddressArr.length < 1) return;
 
         String[] tempArr;
-        if (imgAddressArr.length > MAX_CAROUSEL_PICTRUE) {
-            tempArr = new String[MAX_CAROUSEL_PICTRUE];
-            System.arraycopy(imgAddressArr, 0, tempArr, 0, MAX_CAROUSEL_PICTRUE);
+        if (imgAddressArr.length > MAX_CAROUSEL_PICTURE) {
+            tempArr = new String[MAX_CAROUSEL_PICTURE];
+            System.arraycopy(imgAddressArr, 0, tempArr, 0, MAX_CAROUSEL_PICTURE);
         } else {
             tempArr = imgAddressArr;
         }
@@ -272,7 +272,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
         private WeakReference<RollPollingFragment> mWeekReference;
         private int mIndicatorResId;
 
-        public DownImgAsyncTask(RollPollingFragment fragment, int indicatorResId) {
+        private DownImgAsyncTask(RollPollingFragment fragment, int indicatorResId) {
             this.mWeekReference = new WeakReference<>(fragment);
             this.mIndicatorResId = indicatorResId;
         }
@@ -281,16 +281,15 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
         protected List<Bitmap> doInBackground(String... params) {
             List<Bitmap> bitmapList = new ArrayList<>();
             for (int i = 0; i < params.length; i++) {
-                if (params != null && params[i] != null) {
-                    String imgAddress = params[i].toString();
+                if (params[i] != null) {
+                    String imgAddress = params[i];
                     Bitmap bitmap = RollPollingUtil.getBitmapFromUrl(imgAddress);
+                    RollPollingFragment rpFragment = mWeekReference.get();
+                    if (!rpFragment.isAdded()) break;
                     if (bitmap != null) {
                         bitmapList.add(bitmap);
                     } else {
-                        RollPollingFragment rpFragment = mWeekReference.get();
-                        if (rpFragment != null) {
-                            bitmapList.add(BitmapFactory.decodeResource(rpFragment.getResources(), R.mipmap.img_default));
-                        }
+                        bitmapList.add(BitmapFactory.decodeResource(rpFragment.getResources(), R.mipmap.img_default));
                     }
                 }
             }
@@ -301,15 +300,14 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
         protected void onPostExecute(List<Bitmap> bitmapList) {
             super.onPostExecute(bitmapList);
             RollPollingFragment rpFragment = mWeekReference.get();
-            if (rpFragment != null) {
-                // 处理数据
-                rpFragment.handleData(bitmapList);
-                // 更新界面
-                rpFragment.updateUI(mIndicatorResId);
-                // 将此界面显示出来
-                // 放在最后的原因：图片下载需要一点时间，避免图片加载过程中，界面的短暂空白
-                rpFragment.showUI();
-            }
+            if (!rpFragment.isAdded()) return;
+            // 处理数据
+            rpFragment.handleData(bitmapList);
+            // 更新界面
+            rpFragment.updateUI(mIndicatorResId);
+            // 将此界面显示出来
+            // 放在最后的原因：图片下载需要一点时间，避免图片加载过程中，界面的短暂空白
+            rpFragment.showUI();
         }
     }
 
