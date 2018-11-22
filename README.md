@@ -24,7 +24,7 @@ picture roll polling never stop.
 <br />
 
 #### 2. add the dependency: 
-compile 'com.github.cyfiilu:rollpolling:v1.0.2'
+compile 'com.github.cyfiilu:rollpolling:v1.0.4'    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   **（最新版本是v1.0.4）**
 
 
 <br />
