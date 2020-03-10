@@ -1,12 +1,11 @@
 package com.iilu.lib_rollpolling;
 
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,15 +13,13 @@ import java.util.List;
  */
 public class RollPollingAdapter extends PagerAdapter {
 
-    private Context mContext;
-    private List<ImageView> mImgList = new ArrayList<>();
+    private List<ImageView> mImgList;
 
-    public RollPollingAdapter(Context context, List<ImageView> imgList) {
-        this.mContext = context;
+    RollPollingAdapter(List<ImageView> imgList) {
         this.mImgList = imgList;
     }
 
-    public void updateDatas(List<ImageView> imgList) {
+    void updateDatas(List<ImageView> imgList) {
         this.mImgList = imgList;
         notifyDataSetChanged();
     }
@@ -33,19 +30,20 @@ public class RollPollingAdapter extends PagerAdapter {
     }
 
     @Override
-    public boolean isViewFromObject(View view, Object object) {
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = mImgList.get(position);
         container.addView(imageView);
         return imageView;
     }
 
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
         //if (position > mImgList.size() - 1) return;
         //container.removeView(mImgList.get(position));

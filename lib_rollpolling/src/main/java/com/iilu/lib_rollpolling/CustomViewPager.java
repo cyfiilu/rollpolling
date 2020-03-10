@@ -21,7 +21,17 @@ public class CustomViewPager extends ViewPager {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_UP:
+                performClick();
+                break;
+        }
         return this.mIsPageEnabled && super.onTouchEvent(event);
     }
 

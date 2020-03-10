@@ -3,11 +3,16 @@
 buildscript {
     
     repositories {
+        //google()
+        //mavenCentral()
+        //maven { url 'https://maven.google.com' }
+        //jcenter()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.0'
+        classpath 'com.android.tools.build:gradle:3.3.0'
         // JitPack Maven Gradle Plugin
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
 
@@ -18,6 +23,11 @@ buildscript {
 
 allprojects {
     repositories {
+        //google()
+        //mavenCentral()
+        //maven { url 'https://maven.google.com' }
+        //jcenter()
+        maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
         google()
         jcenter()
     }

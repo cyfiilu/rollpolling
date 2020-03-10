@@ -12,14 +12,14 @@ import java.net.URL;
 /**
  * Created by Administrator on 2018/11/14.
  */
-public class RollPollingUtil {
+class RollPollingUtil {
 
     /**
      * 从url中获取图片
-     * @param urlString
-     * @return
+     * @param urlString 图片url
+     * @return 图片的bitmap对象
      */
-    public static Bitmap getBitmapFromUrl(String urlString) {
+    static Bitmap getBitmapFromUrl(String urlString) {
         //URLConnection urlConnection;
         HttpURLConnection httpUrlConnection;
         InputStream is = null;

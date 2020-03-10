@@ -7,8 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -37,14 +39,51 @@ import java.util.TimerTask;
  */
 public class RollPollingFragment extends Fragment implements View.OnClickListener {
 
-    private static final int MSG_EMPTY = 0x0001;
+    private static final int MSG_EMPTY = 0x001;
     /**最多轮播图片*/
     private static final int MAX_CAROUSEL_PICTURE = 9;
+
+    /**
+     * 左上
+     */
+    public static final int LEFT_TOP = Gravity.START | Gravity.TOP;
+    /**
+     * 左中
+     */
+    public static final int LEFT_CENTER = Gravity.START | Gravity.CENTER;
+    /**
+     * 左下
+     */
+    public static final int LEFT_BOTTOM = Gravity.START | Gravity.BOTTOM;
+    /**
+     * 中上
+     */
+    public static final int CENTER_TOP = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+    /**
+     * 中间
+     */
+    public static final int CENTER_CENTER = Gravity.CENTER_HORIZONTAL | Gravity.CENTER;
+    /**
+     * 中下
+     */
+    public static final int CENTER_BOTTOM = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+    /**
+     * 右上
+     */
+    public static final int RIGHT_TOP = Gravity.END | Gravity.TOP;
+    /**
+     * 右中
+     */
+    public static final int RIGHT_CENTER = Gravity.END | Gravity.CENTER;
+    /**
+     * 右下
+     */
+    public static final int RIGHT_BOTTOM = Gravity.END | Gravity.BOTTOM;
 
     /** 轮播时长 */
     private long mRollPollingPeriod = 3000L;
     private float mCornerRadius = 5f;
-    private int mIndicatorGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+    private int mIndicatorGravity = CENTER_CENTER;
     private int mIndicatorPadding = 5;
     private int mStartPosition = 1;
     private int mPreIndex;
@@ -91,14 +130,16 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mContext = getActivity();
-        this.mCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mCornerRadius, mContext.getResources().getDisplayMetrics());
-        this.mIndicatorPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mIndicatorPadding, mContext.getResources().getDisplayMetrics());
+        this.mCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, mCornerRadius,
+                getResources().getDisplayMetrics());
+        this.mIndicatorPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                mIndicatorPadding, getResources().getDisplayMetrics());
     }
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rollpolling, null, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_rollpolling, container, false);
         initView(view);
         return view;
     }
@@ -107,17 +148,20 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
         mLayoutContainer = (FrameLayout) view.findViewById(R.id.fl_container);
         mViewPager = (CustomViewPager) view.findViewById(R.id.viewPager);
         mRadioGroup = (RadioGroup) view.findViewById(R.id.radioGroup);
-        mAdAdapter = new RollPollingAdapter(mContext, mImgList);
+        mAdAdapter = new RollPollingAdapter(mImgList);
         mViewPager.setAdapter(mAdAdapter);
         mViewPager.setPagerEnabled(false);
     }
 
     private void showUI() {
-        FragmentManager mFragmentManager = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .show(RollPollingFragment.this)
-                .commitAllowingStateLoss();
+        FragmentActivity fragActivity = getActivity();
+        if (fragActivity != null) {
+            FragmentManager mFragmentManager = fragActivity.getSupportFragmentManager();
+            FragmentTransaction transaction = mFragmentManager.beginTransaction();
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .show(RollPollingFragment.this)
+                    .commitAllowingStateLoss();
+        }
     }
 
     /**
@@ -185,7 +229,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
             startTimerTask();
         } else {
             mViewPager.setPagerEnabled(false);
-            mViewPager.addOnPageChangeListener(null);
+            mViewPager.removeOnPageChangeListener(mOnPagerChangeListener);
             mViewPager.setOnTouchListener(null);
             mViewPager.setCurrentItem(mStartPosition, false);
         }
@@ -265,6 +309,10 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
     public void onDestroy() {
         super.onDestroy();
         stopTimerTask();
+        mHandler.removeCallbacksAndMessages(null);
+        if (mViewPager != null) {
+            mViewPager.removeOnPageChangeListener(mOnPagerChangeListener);
+        }
     }
 
     private static class DownImgAsyncTask extends AsyncTask<String, Void, List<Bitmap>> {
@@ -346,9 +394,13 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
                 case MotionEvent.ACTION_MOVE:
                     stopTimerTask();
                     break;
-                default:
+                case MotionEvent.ACTION_UP:
+                    v.performClick();//消除onTouch()方法飘黄警告
                     stopTimerTask();
                     startTimerTask();
+                    break;
+                default:
+                    break;
             }
             return false;
         }
@@ -356,11 +408,12 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     /**
      * 设置图片的高度
-     * @param height
+     * @param height 单位：dp
+     * @return 返回此Fragment
      */
     public RollPollingFragment setImgHeight(int height) {
-        height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                height, mContext.getResources().getDisplayMetrics());
+        height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, height,
+                getResources().getDisplayMetrics());
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayoutContainer.getLayoutParams();
         lp.height = height;
         mLayoutContainer.setLayoutParams(lp);
@@ -369,11 +422,12 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     /**
      * 设置图片的左右边距
-     * @param imgMargin
+     * @param imgMargin 单位：dp
+     * @return 返回此Fragment
      */
     public RollPollingFragment setImgMargin(int imgMargin) {
-        imgMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                imgMargin, mContext.getResources().getDisplayMetrics());
+        imgMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, imgMargin,
+                getResources().getDisplayMetrics());
         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mLayoutContainer.getLayoutParams();
         lp.leftMargin = imgMargin;
         lp.rightMargin = imgMargin;
@@ -383,17 +437,21 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     /**
      * 设置图片圆角弧度
-     * @param cornerRadius
+     * @param cornerRadius 图片圆角弧度半径
+     * @return 返回此Fragment
      */
     public RollPollingFragment setCornerRadius(float cornerRadius) {
         this.mCornerRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                cornerRadius, mContext.getResources().getDisplayMetrics());
+                cornerRadius, getResources().getDisplayMetrics());
         return this;
     }
 
     /**
      * 设置指示器的位置
-     * @param indicatorGravity
+     * @param indicatorGravity 可以设置9个位置 eg：{@link #LEFT_TOP} {@link #LEFT_CENTER} {@link #LEFT_BOTTOM}
+     *                         {@link #CENTER_TOP} {@link #CENTER_CENTER} {@link #CENTER_BOTTOM}
+     *                         {@link #RIGHT_TOP} {@link #RIGHT_CENTER} {@link #RIGHT_BOTTOM}
+     * @return 返回此Fragment
      */
     public RollPollingFragment setIndicatorGravity(int indicatorGravity) {
         this.mIndicatorGravity = indicatorGravity;
@@ -402,17 +460,19 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
 
     /**
      * 设置指示器的左右边距
-     * @param indicatorPadding
+     * @param indicatorPadding 单位：dp
+     * @return 返回此Fragment
      */
     public RollPollingFragment setIndicatorPadding(int indicatorPadding) {
         this.mIndicatorPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                indicatorPadding, mContext.getResources().getDisplayMetrics());
+                indicatorPadding, getResources().getDisplayMetrics());
         return this;
     }
 
     /**
      * 设置开始轮播的位置，默认是第一个
-     * @param startPosition
+     * @param startPosition 从1开始，有3张图片的话，值可以是1、2、3
+     * @return 返回此Fragment
      */
     public RollPollingFragment setStartPosition(int startPosition) {
         this.mStartPosition = startPosition;
@@ -422,7 +482,7 @@ public class RollPollingFragment extends Fragment implements View.OnClickListene
     /**
      * 轮播间隔
      * @param rollPollingPeriod 单位：ms
-     * @return
+     * @return 返回此Fragment
      */
     public RollPollingFragment setRollPollingPeriod(long rollPollingPeriod) {
         this.mRollPollingPeriod = rollPollingPeriod;
